@@ -9,6 +9,14 @@ Africa I. Flores-Anderson 19-05-2023
 * Plot time series data from Sentinel-1 and Alos Palsar and explain changes in forest cover 
 * Distinguish how SAR C-band  and L-band see deforestation events 
 
+
+## Using Google Earth Engine
+1. Open the [code editor of GEE](https://code.earthengine.google.com/) 
+2. The following figure describes the GEE code editor interface
+
+![fig](/Figures/GEE_Interface5.png)
+<sub>Figure 1. GEE User Interface. </sub>
+
 ## Exercise 1: Visualize Time series of Sentinel-1 and Alos Palsar data over a deforestation event
 First let's check how a deforestation event looks with Optical data. We will explore a deforestation event in Papau New Guinea as detected by [RADD Forest Disturbance Alert](https://nrtwur.users.earthengine.app/view/raddalert). 
 
@@ -16,9 +24,7 @@ There is availability of [ALOS Palsar ScanSAR](https://developers.google.com/ear
 
 The location of interest is Lat: -4.011 &deg; , Lon: 141.303 &deg;  
 
-1. Open the code editor of GEE: https://code.earthengine.google.com/ 
-2. Copy and paste the following code blocks
-3. 
+
 ```java
 //Create variable with the point location of interest
 var defPaG = ee.Geometry.Point([141.303, -4.011])
@@ -35,4 +41,3 @@ Map.addLayer(aoi, {}, 'aoi');
 // Zoom to area of of interest
 Map.centerObject(aoi,10);
 ```
-
