@@ -18,4 +18,4 @@ Africa I. Flores-Anderson 19-05-2023
 <sub>Figure 1. GEE User Interface. </sub>
 
 ## Exercises:
-1. [Time series](/Exercise1_TimeSeries.md)
+1. [Time series visualization Sentinel-1 and Alos Palsar](/Exercise1_TimeSeries.md)
