@@ -179,3 +179,70 @@ var vh = ee.Image(ddata.select('VH').mean());
 print('vh',vh)
 Map.addLayer(vh, {min: -30, max:0}, "4. Mean VH ")
 ```
+The following code covers:
+1. Pre-process Sentinel-1 GRD data to get simulated Radiometric Terrain corrected data 
+2. Apply functions to corrected Sentinel-1 data to derive RGBs 
+3. Create and visualize animations of RGBs 
+
+Note: try to keep all the code snippets in the same script, since we're using variables and functions defined above. 
+```java
+//Get Functions that will be used to process SAR datasets
+var functions = require('users/africa_uah/SAREdX:00.Functions')
+
+var afn_raiseToPowerForSAR = functions.afn_raiseToPowerForSAR
+var powerToDb = functions.powerToDb
+var dbToPower = functions.dbToPower
+var terrainCorrection = functions.terrainCorrection
+var gammaMap = functions.gammaMap
+var afn_SARtoRGB = functions.afn_SARtoRGB //to create RGB following Freeman image decomposition
+
+
+//Correct Sentinel-1 GRD data 
+var ICofRGBs0 = ddata.map(terrainCorrection)
+var ICofRGBs1 = ICofRGBs0.map(gammaMap)
+
+//Function to apply afn_SARtoRGB to individual S1 images 
+function afn_oneSARtoRGB (oneImage){
+var vv = ee.Image(oneImage.select('VV'));
+var vh = ee.Image(oneImage.select('VH'));
+var OnecrossPolThenCoPol = vh.addBands(vv)
+return(afn_SARtoRGB(OnecrossPolThenCoPol))
+}
+
+//Create Image collection of Sentinel-1 RGBs
+var ICofRGBs = ICofRGBs1.map(afn_oneSARtoRGB)
+
+//Visualization of RGBs for S1 and Alos Palsar
+var visArgsSen1 = {bands: ['AR', 'AG', 'AB'], min: 30, max: 210};
+
+//Adding date as text to S1 RGBs animations
+function addTextS1(image){
+  
+  var timeStamp =  ee.Date(image.get('system:time_start')).format().slice(0,10) // get the time stamp of each frame. This can be any string. Date, Years, Hours, etc.
+  var timeStamp = ee.String('Date: ').cat(ee.String(timeStamp));  
+  var image = image.visualize(visArgsSen1).set({'label': timeStamp}) // set a property called label for each image
+  
+  var annotated = text.annotateImage(image, {}, defaultStudyArea, annotations); // create a new image with the label overlayed using gena's package
+
+  return annotated 
+}
+
+
+var tempCol = ICofRGBs.map(addTextS1)//adding date annotation for S1
+
+// Define arguments for animation function parameters.
+var videoArgs = {
+  dimensions: 768,
+  region: defaultStudyArea,
+  framesPerSecond: 7,
+  min: 20,
+  max: 100.0,
+};
+
+//See animation and obtain URL of Sentinel-1 RGBs .gif 
+print(ui.Thumbnail(tempCol, videoArgs)); //Sentinel 1 RGBs
+print(tempCol.getVideoThumbURL(videoArgs));
+```
+![fig](/Figures/Sentinel1_PapNewGu_RGB.gif)
+
+<sub>Figure 3. Sentinel-1 Animation - RGBs. </sub>
