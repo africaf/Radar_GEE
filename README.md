@@ -246,3 +246,106 @@ print(tempCol.getVideoThumbURL(videoArgs));
 ![fig](/Figures/Sentinel1_PapNewGu_RGB.gif)
 
 <sub>Figure 3. Sentinel-1 Animation - RGBs. </sub>
+
+It is difficult to visualize a change in this animation. Hence, we will visualize directly one of the polarization to assess if a change is visible.
+
+```java
+//Let's create an animation with the VV polarization from Sentinel-1 
+var visArgsSen1VV = {
+  bands: ['VV'],
+  min: -15,
+  max: -5,
+  palette: [
+    '000000', '222222', '333333', '666666', 
+    '999999', 'CCCCCC', 'EEEEEE', 'FFFFFF']
+};
+
+//Add date as text 
+function addTextS1VV(image){
+  
+  var timeStamp =  ee.Date(image.get('system:time_start')).format().slice(0,10) // get the time stamp of each frame. This can be any string. Date, Years, Hours, etc.
+  var timeStamp = ee.String('Date: ').cat(ee.String(timeStamp)); //conveee.String('Date: ').cat(ee.String(timeStamp));rt time stamp to string 
+  var image = image.visualize(visArgsSen1VV).set({'label': timeStamp}) // set a property called label for each image
+  
+  var annotated = text.annotateImage(image, {}, defaultStudyArea, annotations); // create a new image with the label overlayed using gena's package
+
+  return annotated 
+}
+//Add date to IC of Sentinel-1 VV polarizations 
+var S1VV = ICofRGBs1.select('VV').map(addTextS1VV)
+
+var videoArgsdB = {
+  dimensions: 768,
+  region: defaultStudyArea,
+  framesPerSecond: 7,
+};
+
+print(ui.Thumbnail(S1VV, videoArgsdB));
+print(S1VV.getVideoThumbURL(videoArgsdB));
+```
+![fig](/Figures/Sentinel1_PapNewGu_VV.gif)
+
+<sub>Figure 3. Sentinel-1 Animation - VV. </sub>
+___
+> ####  Practice: 
+> *Modify the code to visualize animation of the VH polarization*
+> *Tip: You may need to modify min and max values of the visualization arguments* 
+___
+> ####  Question 4:
+> *Are there any differences between the VV and VH polarizations? What could be the explanations for any differences? *
+___
+
+Finally, let's check Alos Palsar data 
+
+```java
+
+//Visualizing RGBs 
+function afn_oneSARtoRGBALOS (oneImage){
+var hh = ee.Image(oneImage.select('dBHH'));
+var hv = ee.Image(oneImage.select('dBHV'));
+var OnecrossPolThenCoPol = hv.addBands(hh)
+return(afn_SARtoRGB(OnecrossPolThenCoPol))
+}
+
+var ICofRGBsALOS = ALOSdB.map(afn_oneSARtoRGBALOS)
+var tempColAlos = ICofRGBsALOS.map(addTextS1)//adding date annotation for Alos
+
+print(ui.Thumbnail(tempColAlos, videoArgs)); //Alos Palsar RGBs 
+print(tempColAlos.getVideoThumbURL(videoArgs));
+
+//Visualizing HH polarization
+var visArgsALOSHH = {
+  bands: ['dBHH'],
+  min: -15,
+  max: -5,
+  palette: [
+    '000000', '222222', '333333', '666666', 
+    '999999', 'CCCCCC', 'EEEEEE', 'FFFFFF']
+};
+
+function addTextAHH(image){
+  
+  var timeStamp =  ee.Date(image.get('system:time_start')).format().slice(0,10) // get the time stamp of each frame. This can be any string. Date, Years, Hours, etc.
+  var timeStamp = ee.String('Date: ').cat(ee.String(timeStamp)); //conveee.String('Date: ').cat(ee.String(timeStamp));rt time stamp to string 
+  var image = image.visualize(visArgsALOSHH).set({'label': timeStamp}) // set a property called label for each image
+  
+  var annotated = text.annotateImage(image, {}, defaultStudyArea, annotations); // create a new image with the label overlayed using gena's package
+
+  return annotated 
+}
+
+var AlosHH = ALOSdB.select('dBHH').map(addTextAHH)
+
+print(ui.Thumbnail(AlosHH, videoArgsdB)); // HH band Alos Palsar
+print(AlosHH.getVideoThumbURL(videoArgsdB));
+```
+![fig](/Figures/Alos_PapNewGu_HH.gif)
+
+<sub>Figure 4. Alos Palsar Animation - HH. </sub>
+___
+> ####  Practice: 
+> *Modify the code to visualize animation of the HV polarization for Alos Palsar*
+
+___
+> ####  Question 5:
+> *Are there any differences between the HH and HV polarizations in visualizing this type of change? What could be the explanations for any differences? *
