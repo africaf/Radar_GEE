@@ -108,6 +108,11 @@ var gifParams = {
   'maxPixels': 46046000
 };
 
+//Visualize animation in Console and get URL for .gif animation
 print(ui.Thumbnail(s2colVis2, gifParams)); // Sentinel-2 Optical 
 print(s2colVis2.getVideoThumbURL(gifParams));
   ```
+
+The following animation should appear in the Console:
+![fig](/Figures/Sentinel2_PapNewGu1.gif)
+<sub>Figure 2. Sentinel-2 Animation . </sub>
