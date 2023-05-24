@@ -115,4 +115,5 @@ print(s2colVis2.getVideoThumbURL(gifParams));
 
 The following animation should appear in the Console:
 ![fig](/Figures/Sentinel2_PapNewGu1.gif)
+
 <sub>Figure 2. Sentinel-2 Animation . </sub>
