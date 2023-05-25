@@ -96,8 +96,10 @@ print(chart);
 
 Now, we will calculate the [Radar Forest Degradation Index](https://servirglobal.net/Portals/0/Documents/Articles/2019_SAR_Handbook/SAR_VegIndices_1page_new.pdf) as described in the [SAR Handbook](https://servirglobal.net/Global/Articles/Article/2674/sar-handbook-comprehensive-methodologies-for-forest-monitoring-and-biomass-estimation). 
 
-![fig](/Figures/RFDI_0.png)
-![fig](/Figures/RFDI_1.png)
+
+<img src="Figures/RFDI_0.png"  width="278" height="120">
+<img src="Figures/RFDI_1.png"  width="315" height="288">
+
 
 <sub>Figure 2. RFDI calculation and interpretation. Source: [SAR Vegetation Indices](https://servirglobal.net/Portals/0/Documents/Articles/2019_SAR_Handbook/SAR_VegIndices_1page_new.pdf) . </sub>
 
