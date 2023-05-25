@@ -139,6 +139,6 @@ var chartRFDIall = ui.Chart.image.series({
 });
 
 ```
-![fig](Figures/chartFRDI.png)
 
+<img src="Figures/chartFRDI.png"  width="580" height="238">
 <sub>Figure 3. Expected RFDI graph </sub>
