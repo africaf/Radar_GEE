@@ -15,7 +15,7 @@ Map.centerObject(aoi, 13);
 ```
 Define dates of interest
 ```java
-var firstdate = '2022-01-01'
+var firstdate = '2021-01-01'
 var seconddate = '2022-12-31'
  ```
 
@@ -24,7 +24,7 @@ Then, we will call and filter by date, location and available polarizations Imag
 //Alos Palsar data
 var collectionALOS =  ee.ImageCollection('JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR')
   .filterBounds(defPaG)
-  .filterDate(firstdate, lastdate)
+  .filterDate(firstdate, seconddate)
   .filter(ee.Filter.eq('Polarizations', ["HH", "HV"]))
   
 //Create collections by polarizations
@@ -144,3 +144,47 @@ var chartRFDIall = ui.Chart.image.series({
 
 <img src="Figures/chartFRDI.png"  width="580" height="238">
 <sub>Figure 3. Expected RFDI graph </sub>
+
+___
+> ####  Question 1: 
+> *Based on the plots of the individuals polarizations and RFDI, can you identify the date on which Alos Palsar consistentely identifies change on the surface?  *
+___
+
+Now, we will plot the Sentinel-1 data 
+```java
+//First, process the GRD data to get Gamma naught in dB by applying pre-defined functions
+//Get relevant functions
+var functions = require('users/africa_uah/SAREdX:00.Functions')
+var powerToDb = functions.powerToDb
+var dbToPower = functions.dbToPower
+var terrainCorrection = functions.terrainCorrection
+var gammaMap = functions.gammaMap
+
+//Correct Sentinel-1 GRD data 
+var ICofRGBs0 = ddata.map(terrainCorrection)
+var ICofRGBs1 = ICofRGBs0.map(gammaMap)//get VV and VH in dB 
+
+// Define the chart and print it to the console.
+var chartS1 = ui.Chart.image.series({
+  imageCollection: ICofRGBs1.select('VV', 'VH'),
+  region: aoi,
+  reducer: ee.Reducer.mean(),
+  scale: 30,
+  xProperty: 'system:time_start'
+})
+.setSeriesNames(['VV', 'VH'])
+.setOptions({
+  title: 'Average dB by Date',
+  hAxis: {title: 'Date', titleTextStyle: {italic: false, bold: true}},
+  vAxis: {
+    title: 'dB ',
+    titleTextStyle: {italic: false, bold: true}
+  },
+  lineWidth: 4,
+  colors: ['blue', 'green'],
+  curveType: 'function'
+});
+print(chartS1);
+```
+<img src="Figures/chartVVVH.png"  width="580" height="238">
+<sub>Figure 4. Expected graph for VV and VH </sub>
