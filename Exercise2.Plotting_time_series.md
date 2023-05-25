@@ -90,7 +90,7 @@ var chart = ui.Chart.image.series({
 });
 print(chart);
 ```
-![fig](Figures/chartHHHV.png)
+<img src="Figures/chartHHHV.png"  width="580" height="238">
 
 <sub>Figure 1. Chart of HH and HV polarization over time for aoi </sub>
 
