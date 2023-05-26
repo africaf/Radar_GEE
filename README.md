@@ -19,3 +19,4 @@ Africa I. Flores-Anderson 19-05-2023
 
 ## Exercises:
 1. [Time series visualization Sentinel-1 and Alos Palsar](/Exercise1_TimeSeries.md)
+2. [Plotting Time series values and calculation of Vegetation Indices from Sentinel-1 and Alos Palsar](/Exercise2.Plotting_time_series.md)
