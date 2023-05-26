@@ -144,6 +144,8 @@ var chartRFDIall = ui.Chart.image.series({
   curveType: 'function'
 });
 
+print(chartRFDIall)
+
 ```
 
 <img src="Figures/chartFRDI.png"  width="580" height="238">
@@ -244,6 +246,8 @@ print(chartRFDISen)
 <img src="Figures/chartRFDIm.png"  width="580" height="238">
 <sub>Figure 5. Expected graph for RFDI calculated from Sentinel-1 </sub>
 
+
+Full [script](https://code.earthengine.google.com/738b37bf6a494ad6c56bf230d0702b2c)
 ___
 > ####  Final discussion: 
 > *Can you identify more clearly the date of change using the RFDI? Which date do you see there was a change? 
