@@ -51,6 +51,10 @@ print(ddata, 'Sentinel-1 Descending')
 //Create collections by polarizations
 var collectionVV = ddata.select('VV')
 var collectionVH = ddata.select('VH')
+
+//Visualize one of the images for Alos Palsar
+Map.addLayer(collectionHH.first(), {min: 0, max: 8000}, 'First image HH polarization');
+
 ```
 Transform Alos Palsar data to dB 
 ```java
@@ -147,7 +151,7 @@ var chartRFDIall = ui.Chart.image.series({
 
 ___
 > ####  Question 1: 
-> *Based on the plots of the individuals polarizations and RFDI, can you identify the date on which Alos Palsar consistentely identifies change on the surface?  *
+> *Based on the graphs of the individuals polarizations and the RFDI, can you identify the date on which Alos Palsar sees a change  on the surface?  *
 ___
 
 Now, we will plot the Sentinel-1 data 
@@ -188,3 +192,63 @@ print(chartS1);
 ```
 <img src="Figures/chartVVVH.png"  width="580" height="238">
 <sub>Figure 4. Expected graph for VV and VH </sub>
+
+___
+> ####  Question 2: 
+> *Navigate through the graph portraying Sentinel-1 time series of VV and VH polarizations. Which date do you see there was a change? *
+___
+
+
+Now lets calculate a modified version of the RFDI with Sentinel-1 data. Instead of the HH polarization we will use VV, which is the one available for Sentinel-1.
+
+```java
+//Transform bands from dB to power
+var SentICpow =  function (image){
+    var VV = dbToPower(image.select('VV')).rename('VVpw')
+    var VH = dbToPower(image.select('VH')).rename('VHpw')
+    return image.addBands([VV, VH])
+}
+
+var SentIC = ICofRGBs1.map(SentICpow)
+
+print(SentIC, 'SentIC')
+
+//Create function to calculate RFDIm. This will add a RFDIm band to each image in the collection
+function RFDIm (image){
+  var rfdim = image.normalizedDifference(['VVpw', 'VHpw']).rename('RFDIm')
+  return image.addBands(rfdim)
+}
+
+var RFDImSen = SentIC.map(RFDIm)
+
+//Graph RFDI 
+var chartRFDISen = ui.Chart.image.series({
+  imageCollection: RFDImSen.select('RFDIm'),
+  region:  aoi,
+  reducer: ee.Reducer.mean(),
+  scale: 30
+}).setOptions({
+  title: 'RFDIm over time from Sentinel-1',
+  hAxis: {title: 'Date', titleTextStyle: {italic: false, bold: true}},
+  vAxis: {
+    title: 'RFDIm ',
+    titleTextStyle: {italic: false, bold: true}
+  },
+  lineWidth: 4,
+  colors: ['gray'],
+  curveType: 'function'
+});
+
+print(chartRFDISen)
+```
+<img src="Figures/chartRFDIm.png"  width="580" height="238">
+<sub>Figure 5. Expected graph for RFDI calculated from Sentinel-1 </sub>
+
+___
+> ####  Final discussion: 
+> *Can you identify more clearly the date of change using the RFDI? Which date do you see there was a change? 
+
+> *How does the time series from Alos Palsar and Sentinel-1 differ? Are changes detected at different times? *
+
+Tip: Check the theory associated with these exercises to inform your discussion.
+___
